@@ -122,7 +122,17 @@ function fastForward() {
   document.getElementById("fastForwardButton").disabled = true;
   document.getElementById("singleStepButton").disabled = true;
   document.getElementById("UART_INPUT").disabled = true;
-  simulationThread = setInterval(() => simulateOneInstruction(state), 0);
+
+  const fast = () => {
+    simulateOneInstruction(state);
+    if (state.playing) {
+      frameId = requestAnimationFrame(fast)
+    } else {
+      cancelAnimationFrame(frameId);
+    }
+  }
+  let frameId = requestAnimationFrame(fast);
+  //simulationThread = setInterval(() => simulateOneInstruction(state), 0);
   document.getElementById("playImage").style.display = "none";
   document.getElementById("pauseImage").style.display = "inline";
 }
